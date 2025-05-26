@@ -9,7 +9,7 @@ Este proyecto tiene como objetivo comparar el rendimiento y precisión del algor
 
 Se analizan diferencias significativas en:
 
-- ⏱Tiempo de ejecución
+- Tiempo de ejecución
 - Precisión del clustering
 -  Escalabilidad ante grandes volúmenes de datos geoespaciales
 
