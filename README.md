@@ -41,9 +41,8 @@ Ambas versiones se ejecutaron sobre los **mismos datos georreferenciados** (`lat
 
 Se utilizó una muestra balanceada de datos marítimos con las siguientes características:
 
-- Coordenadas geográficas (`latitude`, `longitude`)
 - Estado de navegación (`nav_status`)
-- Muestra equilibrada con 150 registros por estado para pruebas
+- Muestra equilibrada con totalidad de registros
 - Hexágonos H3 (`res_8`) precalculados para integración futura
 
 ---
