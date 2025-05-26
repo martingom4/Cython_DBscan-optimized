@@ -28,10 +28,10 @@ Este trabajo se enmarca dentro de un sistema de análisis marítimo, orientado a
 
 | Criterio               | Scikit-learn DBSCAN | Cython DBSCAN |
 |------------------------|---------------------|----------------|
-| Tiempo de ejecución    | Más lento            | ✅ Más rápido |
+| Tiempo de ejecución    | Más lento            |  Más rápido |
 | Precisión              | Alta                 | Alta (idéntica con mismos parámetros) |
-| Facilidad de uso       | ✅ Más intuitivo     | Requiere compilación |
-| Escalabilidad          | Limitada             | ✅ Mejorada (ideal para producción) |
+| Facilidad de uso       | Más intuitivo     | Requiere compilación |
+| Escalabilidad          | Limitada             |  Mejorada (ideal para calculos maritimos) |
 
 Ambas versiones se ejecutaron sobre los **mismos datos georreferenciados** (`lat`, `lon`) y usando los mismos hiperparámetros `eps` y `min_samples`.
 
