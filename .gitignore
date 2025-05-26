@@ -1,0 +1,16 @@
+venv/
+*.pyc
+__pycache__/
+.env
+*.db
+*.sqlite3
+*.log
+.DS_Store
+.ipynb_checkpoints/
+*.bak
+*.swp
+secrets.json
+config.yaml
+credentials/
+Build/
+test/Data
