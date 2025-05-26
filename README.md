@@ -33,7 +33,7 @@ Este trabajo se enmarca dentro de un sistema de análisis marítimo, orientado a
 | Facilidad de uso       | Más intuitivo     | Requiere compilación |
 | Escalabilidad          | Limitada             |  Mejorada (ideal para calculos maritimos) |
 
-Ambas versiones se ejecutaron sobre los **mismos datos georreferenciados** (`lat`, `lon`) y usando los mismos hiperparámetros `eps` y `min_samples`.
+Ambas versiones se ejecutaron sobre los **mismos datos georreferenciados** (`res_8`) y usando los mismos hiperparámetros `eps` y `min_samples`.
 
 ---
 
