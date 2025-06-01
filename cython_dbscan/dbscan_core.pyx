@@ -38,11 +38,17 @@ cdef inline double haversine(double lat1, double lon1, double lat2, double lon2)
 cdef inline int64_t compute_cell_id(double lat, double lon,
                                     double cell_size_lat,
                                     double cell_size_lon) nogil:
+    """
+    Calcula el ID de celda para una coordenada geográfica.
+    Utiliza una representación de 64 bits donde los 32 bits más altos
+    representan la coordenada de longitud y los 32 bits más bajos
+    representan la coordenada de latitud.
+    """
     cdef double fx = lon / cell_size_lon
     cdef double fy = lat / cell_size_lat
     cdef int64_t x = <int64_t>fx
     cdef int64_t y = <int64_t>fy
-    cdef int64_t mask = <int64_t>0xFFFFFFFF
+    cdef int64_t mask = <int64_t>0xFFFFFFFF # Esto lo que hace es limitar el rango de y a 32 bits
     return (x << 32) | (y & mask)
 
 @cython.boundscheck(False)
@@ -53,6 +59,7 @@ cdef vector[vector[int]] precompute_neighbors(double[:, ::1] coords,
                                        double cell_size_lat,
                                        double cell_size_lon,
                                        cpp_map[int64_t, vector[int]] cell_to_points) nogil:
+    
     cdef Py_ssize_t n = coords.shape[0]
     cdef vector[vector[int]] neighbor_list
     neighbor_list.resize(n)
