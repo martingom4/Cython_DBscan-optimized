@@ -13,37 +13,70 @@ print(f"Hexágonos vecinos de {origin} a distancia 1: {test}")
 """
 import h3
 import json
+import dask.dataframe as dd
+import pandas as pd
 
-def get_res8_neighbors(hexagon, k=1):
-    return list(h3.grid_disk(hexagon, k))
+def get_res8_parent(hexagon):
+    """
+    Obtiene el hexágono padre de resolución 8 para un hexágono dado.
+    """
+    father = h3.cell_to_parent(hexagon, 7)
+    return father
 
-def build_segment_matrix_index(data):
-    segment_index = {}
-    segmenter_count = 0
+def get_res7_children(hexagon):
+    """
+    Obtiene los hexágonos hijos de resolución 7 para un hexágono dado.
+    """
+    children = list(h3.cell_to_children(hexagon))
+    return children
 
-    # Mapea cada res_8 a sus res_15
+
+def build_matrix_from_res8(data):
     res8_to_res15 = data.groupby("res_8")["H3_int_index_15"].apply(set).to_dict()
-    origin_hexes = list(res8_to_res15.keys())
 
-    unique_res15 = data["H3_int_index_15"].unique()
-    res15_to_latlon = {res15: {"id": int(res15), "lat": h3.cell_to_latlng(h3.int_to_str(res15))[0], "lon": h3.cell_to_latlng(h3.int_to_str(res15))[1]} for res15 in unique_res15}
+    latlon_map = data.groupby("H3_int_index_15").agg({
+        "latitude": "first",
+        "longitude": "first"
+    }).to_dict("index")
 
-    for hexagon in origin_hexes:
-        neighbors = get_res8_neighbors(hexagon, k=1)
-        neighbors_list = []
-        for neighbor in neighbors:
-            neighbors_list.append({
-                "res_8": neighbor,
-                "res_15_points": [res15_to_latlon[res15] for res15 in res8_to_res15.get(neighbor, [])]
-            })
+    rows = []
+    visited_res7 = set()
+    segment_id = 0
 
-        segment_index[hexagon] = {
-            "segment_id": segmenter_count,
-            "neighbors": neighbors_list
-        }
-        segmenter_count += 1
+    for res_8 in res8_to_res15.keys():
+        res_7 = get_res8_parent(res_8)
+        if res_7 in visited_res7:
+            continue
 
-    return segment_index
+        visited_res7.add(res_7)
+        children_res8 = get_res7_children(res_7)
+
+        for child in children_res8:
+            if child in res8_to_res15:
+                for res15 in res8_to_res15[child]:
+                    if res15 in latlon_map:
+                        rows.append({
+                            "res_7": res_7,
+                            "res_8": child,
+                            "segment_id": segment_id,
+                            "res_15_id": int(res15),
+                            "lat": latlon_map[res15]["latitude"],
+                            "lon": latlon_map[res15]["longitude"]
+                        })
+            else:
+                # Añadir res_8 vacío con el segment_id correspondiente
+                rows.append({
+                    "res_7": res_7,
+                    "res_8": child,
+                    "segment_id": segment_id,
+                    "res_15_id": None,
+                    "lat": None,
+                    "lon": None
+                })
+
+            segment_id += 1
+
+    return dd.from_pandas(pd.DataFrame(rows), npartitions=4)
 
 def save_segment_index_to_json(segment_index):
     with open("segment_index.json", "w") as f:
