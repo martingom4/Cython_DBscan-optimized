@@ -59,7 +59,7 @@ def build_matrix_from_res8(data):
                             "res_7": res_7,
                             "res_8": child,
                             "segment_id": segment_id,
-                            "res_15_id": int(res15),
+                            "res_15_id": res15,
                             "lat": latlon_map[res15]["latitude"],
                             "lon": latlon_map[res15]["longitude"]
                         })
@@ -78,6 +78,4 @@ def build_matrix_from_res8(data):
 
     return dd.from_pandas(pd.DataFrame(rows), npartitions=4)
 
-def save_segment_index_to_json(segment_index):
-    with open("segment_index.json", "w") as f:
-        json.dump(segment_index, f, indent=2)
+
